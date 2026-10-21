@@ -1,0 +1,42 @@
+name: Live test (Box)
+
+on:
+  schedule:
+    # Mondays 06:00 UTC, after Dependabot's weekly run has had time to open PRs.
+    - cron: '0 6 * * 1'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  # All runs share one test folder and metadata template.
+  group: live-box
+  cancel-in-progress: false
+
+jobs:
+  live:
+    name: Tutorial flow against test enterprise
+    # Pull requests from forks never receive secrets, so skip them instead of failing.
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      # Dependabot PRs read these from Dependabot secrets, all other runs from Actions secrets.
+      - run: npm run test:live
+        env:
+          BOX_CLIENT_ID: ${{ secrets.BOX_CLIENT_ID }}
+          BOX_CLIENT_SECRET: ${{ secrets.BOX_CLIENT_SECRET }}
+          BOX_ENTERPRISE_ID: ${{ secrets.BOX_ENTERPRISE_ID }}
+          BOX_METADATA_TEMPLATE_KEY: ${{ secrets.BOX_METADATA_TEMPLATE_KEY }}
+          INVOICES_FOLDER_ID: ${{ secrets.INVOICES_FOLDER_ID }}
