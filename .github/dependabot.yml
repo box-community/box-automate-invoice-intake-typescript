@@ -1,0 +1,27 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: sunday
+    open-pull-requests-limit: 5
+    groups:
+      # express and its types must move together across a major version.
+      express-major:
+        patterns: [express, '@types/express']
+        update-types: [major]
+      minor-and-patch:
+        patterns: ['*']
+        update-types: [minor, patch]
+    # Majors outside the groups above get one PR each, so a failing live test
+    # points at exactly one breaking dependency.
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: sunday
+    groups:
+      actions:
+        patterns: ['*']

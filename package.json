@@ -7,7 +7,9 @@
   "scripts": {
     "start": "tsx app.ts",
     "build": "tsc",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test:smoke": "tsx tests/smoke.ts",
+    "test:live": "tsx tests/live.ts"
   },
   "engines": {
     "node": ">=20"
