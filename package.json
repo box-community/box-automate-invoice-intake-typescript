@@ -15,7 +15,7 @@
     "node": ">=20"
   },
   "dependencies": {
-    "box-node-sdk": "^10.14.0",
+    "box-node-sdk": "^10.19.0",
     "dotenv": "^16.4.7",
     "express": "^4.21.2"
   },
